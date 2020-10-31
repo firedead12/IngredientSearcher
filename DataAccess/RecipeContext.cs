@@ -12,5 +12,7 @@ namespace IngredientSearcher.DataAccess
         
         public DbSet<Recipe> Recipes { get; set; }
         public DbSet<Provider> Providers { get; set; }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+            => optionsBuilder.UseSnakeCaseNamingConvention();
     }
 }

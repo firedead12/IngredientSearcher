@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace IngredientSearcher.DataAccess.Migrations
 {
     [DbContext(typeof(RecipeContext))]
-    [Migration("20201031103239_InitialCreate")]
+    [Migration("20201031115304_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,20 +27,25 @@ namespace IngredientSearcher.DataAccess.Migrations
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
+                        .HasColumnName("id")
                         .UseIdentityByDefaultColumn();
 
                     b.Property<string>("Api")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("api");
 
                     b.Property<DateTime?>("LastUpdated")
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("last_updated");
 
                     b.Property<string>("Title")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("title");
 
-                    b.HasKey("ID");
+                    b.HasKey("ID")
+                        .HasName("pk_providers");
 
-                    b.ToTable("Providers");
+                    b.ToTable("providers");
                 });
 
             modelBuilder.Entity("IngredientSearcher.DataAccess.Model.Recipe", b =>
@@ -48,32 +53,40 @@ namespace IngredientSearcher.DataAccess.Migrations
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
+                        .HasColumnName("id")
                         .UseIdentityByDefaultColumn();
 
                     b.Property<Ingredient[]>("Ingredients")
-                        .HasColumnType("jsonb");
+                        .HasColumnType("jsonb")
+                        .HasColumnName("ingredients");
 
                     b.Property<int?>("ProviderID")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("provider_id");
 
                     b.Property<string>("Title")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("title");
 
                     b.Property<string>("Url")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("url");
 
-                    b.HasKey("ID");
+                    b.HasKey("ID")
+                        .HasName("pk_recipes");
 
-                    b.HasIndex("ProviderID");
+                    b.HasIndex("ProviderID")
+                        .HasDatabaseName("ix_recipes_provider_id");
 
-                    b.ToTable("Recipes");
+                    b.ToTable("recipes");
                 });
 
             modelBuilder.Entity("IngredientSearcher.DataAccess.Model.Recipe", b =>
                 {
                     b.HasOne("IngredientSearcher.DataAccess.Model.Provider", "Provider")
                         .WithMany()
-                        .HasForeignKey("ProviderID");
+                        .HasForeignKey("ProviderID")
+                        .HasConstraintName("fk_recipes_providers_provider_id");
 
                     b.Navigation("Provider");
                 });

@@ -5,6 +5,8 @@ using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using IngredientSearcher.DataAccess;
+using IngredientSearcher.RecipeFetcher.Fetchers.InitialFetcher;
+using IngredientSearcher.RecipeFetcher.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -37,7 +39,17 @@ namespace IngredientSearcher.RecipeFetcher
                                 certificates.Add(new X509Certificate2(hostContext.Configuration.GetValue<string>("DBCertificate")));
                             });
                         }));
+                    services.AddTransient<InitialFetcher>();
+                    services.AddTransient<ServiceResolver>(provider => key =>
+                    {
+                        return key switch
+                        {
+                            _ => provider.GetService<InitialFetcher>()
+                        };
+                    });
                     services.AddHostedService<Worker>();
                 });
     }
+    
+    public delegate IRecipeFetcher ServiceResolver(string key);
 }
