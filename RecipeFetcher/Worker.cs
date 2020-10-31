@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using IngredientSearcher.DataAccess;
+using IngredientSearcher.RecipeFetcher.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -14,11 +15,13 @@ namespace IngredientSearcher.RecipeFetcher
     {
         private readonly ILogger<Worker> _logger;
         private IServiceProvider _serviceProvider;
+        private ServiceResolver _serviceResolve;
 
-        public Worker(ILogger<Worker> logger, IServiceProvider serviceProvider)
+        public Worker(ILogger<Worker> logger, IServiceProvider serviceProvider, ServiceResolver serviceResolver)
         {
             _logger = logger;
             _serviceProvider = serviceProvider;
+            _serviceResolve = serviceResolver;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -29,10 +32,15 @@ namespace IngredientSearcher.RecipeFetcher
                 using (var scope = _serviceProvider.CreateScope())
                 {
                     var context = scope.ServiceProvider.GetService<RecipeContext>();
-                    _logger.LogInformation(context.Providers.FirstOrDefault()?.Title);
+                    foreach (var provider in context.Providers)
+                    {
+                        await _serviceResolve(provider.Title).FetchRecipes(provider.Api);
+                    }
                 }
-                await Task.Delay(1000, stoppingToken);
+                await Task.Delay(10000000, stoppingToken);
             }
         }
     }
+    
+    
 }
