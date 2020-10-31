@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace RecipeFetcher
+namespace IngredientSearcher.RecipeFetcher
 {
     public class Program
     {
