@@ -54,7 +54,6 @@ namespace IngredientSearcher.RecipeFetcher.Fetchers.InitialFetcher
                 uriBuilder.Query += $"&skip={fetchCount}";
                 jsonResponse = await client.GetFromJsonAsync<InitialFetcherJsonResponse>(uriBuilder.Uri);
             }
-            throw new NotImplementedException();
         }
 
         private async Task<List<Ingredient>> FetchIngredients(Uri url)
