@@ -10,55 +10,55 @@ namespace IngredientSearcher.DataAccess.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Providers",
+                name: "providers",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "integer", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Title = table.Column<string>(type: "text", nullable: true),
-                    Api = table.Column<string>(type: "text", nullable: true),
-                    LastUpdated = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
+                    title = table.Column<string>(type: "text", nullable: false),
+                    api = table.Column<string>(type: "text", nullable: false),
+                    lastupdated = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Providers", x => x.ID);
+                    table.PrimaryKey("pk_providers", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Recipes",
+                name: "recipes",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "integer", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Title = table.Column<string>(type: "text", nullable: true),
-                    Url = table.Column<string>(type: "text", nullable: true),
-                    Ingredients = table.Column<Ingredient[]>(type: "jsonb", nullable: true),
-                    ProviderID = table.Column<int>(type: "integer", nullable: true)
+                    title = table.Column<string>(type: "text", nullable: true),
+                    url = table.Column<string>(type: "text", nullable: true),
+                    ingredients = table.Column<Ingredient[]>(type: "jsonb", nullable: true),
+                    providerid = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Recipes", x => x.ID);
+                    table.PrimaryKey("pk_recipes", x => x.id);
                     table.ForeignKey(
-                        name: "FK_Recipes_Providers_ProviderID",
-                        column: x => x.ProviderID,
-                        principalTable: "Providers",
-                        principalColumn: "ID",
+                        name: "fk_recipes_providers_providerid",
+                        column: x => x.providerid,
+                        principalTable: "providers",
+                        principalColumn: "id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Recipes_ProviderID",
-                table: "Recipes",
-                column: "ProviderID");
+                name: "ix_recipes_providerid",
+                table: "recipes",
+                column: "providerid");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Recipes");
+                name: "recipes");
 
             migrationBuilder.DropTable(
-                name: "Providers");
+                name: "providers");
         }
     }
 }
